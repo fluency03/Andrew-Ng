@@ -39,6 +39,16 @@ def costFunction(X, Y, theta):
 	# print "The costFunction returns ", overall_sum
 	return overall_sum
 
+# cost function using vector calculation
+def costFunctionVec(X, Y, theta):
+	"""Compute cost in vector calculation."""
+	m = len(Y)  # or m = shape(y)[0], since y is 1D
+
+	term = hypothesis(X, theta) - Y
+	# sum( term**2 ) in this case ~= term.T.dot( term )
+	return (term.T.dot(term) / (2 * m))[0, 0]
+
+
 
 # the Gradient Descent
 def gradientDescent(X, Y, theta, alpha, iterations):
@@ -63,6 +73,19 @@ def gradientDescent(X, Y, theta, alpha, iterations):
 	return grad
 
 
+# the Gradient Descent
+def gradientDescentVec(X, Y, theta, alpha, iterations):
+    """Vectorized gradient descent"""
+    grad = copy(theta)
+    m 	 = len(Y)
+
+    for itr in range(0, iterations):
+        cum_sum = X.T.dot(hypothesis(X, grad) - Y)
+        grad 	 -= (alpha / m) * cum_sum
+
+    return grad
+
+
 # function to plot the data
 def plot(X, Y):
 	pyplot.plot(X, Y, 'rx', markersize=5 )
@@ -75,7 +98,7 @@ def plotData1():
 	data = genfromtxt( PATH + "ex1data1.txt", delimiter=',')
 	X, Y = data[:, 0], data[:, 1] # x is the first column, y is the second column
 	m = len(Y) # the number of data
-	# y 	 = y.reshape(m, 1)
+	Y 	 = Y.reshape(m, 1)
 
 	plot(X, Y) # plot the data
 	pyplot.show(block=True) # Call it in order to show the plot window
@@ -85,7 +108,7 @@ def plotData2():
 	data = genfromtxt( PATH + "ex1data1.txt", delimiter=',')
 	X, Y = data[:, 0], data[:, 1] # x is the first column, y is the second column
 	m    = len(Y) # the number of data
-	# Y 	 = Y.reshape(m, 1)
+	Y 	 = Y.reshape(m, 1)
 
 	# To take into account the intercept term (theta0), we add an additional first column to X 
 	# and set it to all ones. This allows us to treat theta0 as simply another 'feature'.
@@ -94,8 +117,8 @@ def plotData2():
 	iterations 	= 1500
 	alpha 		= 0.01
 
-	cost 	= costFunction(X, Y, theta)  # should be 32.07
-	theta 	= gradientDescent(X, Y, theta, alpha, iterations)
+	cost 	= costFunctionVec(X, Y, theta)  # should be 32.07
+	theta 	= gradientDescentVec(X, Y, theta, alpha, iterations)
 	print "The cost is", cost
 	print "The theta is ", theta
 
@@ -127,7 +150,7 @@ def visualization():
 	for i, v0 in enumerate(theta0_vals):
 		for j, v1 in enumerate(theta1_vals):
 			theta 		 = array((theta0_vals[i], theta1_vals[j]))
-			J_vals[i, j] = costFunction(X, Y, theta)
+			J_vals[i, j] = costFunctionVec(X, Y, theta)
 
 	R, P = meshgrid(theta0_vals, theta1_vals)
 
@@ -152,10 +175,10 @@ def visualization():
 # main function
 def main():
 	# set_printoptions(precision=6, linewidth=200)
-	# newMatrix()
+	newMatrix()
 
-	# plotData1()
-	# plotData2()
+	plotData1()
+	plotData2()
 	visualization()
 
 
