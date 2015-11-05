@@ -32,12 +32,9 @@ def costFunction(X, Y, theta):
 
 	overall_sum = 0
 	for i in range(0, m):
-		# print X[i].shape
-		# print theta.shape
 		overall_sum += (hypothesis(X[i], theta) - Y[i]) ** 2
-	overall_sum = (1.0/(2*m)) * overall_sum
 	# print "The costFunction returns ", overall_sum
-	return overall_sum
+	return overall_sum / (2*m)
 
 # cost function using vector calculation
 def costFunctionVec(X, Y, theta):
@@ -63,7 +60,6 @@ def gradientDescent(X, Y, theta, alpha, iterations):
 		for j in range(0, n):
 			for i in range(0, m):
 				overall_sum[j] += (hypothesis(X[i], grad) - Y[i]) * X[i, j]
-		# overall_sum = (1.0/(2*m)) * overall_sum
 
 		# assign new values for each gradient, this should be separate from the loop above
 		# in order to achieve simulataneous update effect
@@ -118,7 +114,9 @@ def plotData2():
 	alpha 		= 0.01
 
 	cost 	= costFunctionVec(X, Y, theta)  # should be 32.07
+	# cost 	= costFunction(X, Y, theta)  # should be 32.07
 	theta 	= gradientDescentVec(X, Y, theta, alpha, iterations)
+	# theta 	= gradientDescent(X, Y, theta, alpha, iterations)
 	print "The cost is", cost
 	print "The theta is ", theta
 
@@ -139,7 +137,7 @@ def visualization():
 	X, Y = data[:, 0], data[:, 1] # x is the first column, y is the second column
 	m    = len(Y) # the number of data
 	Y 	 = Y.reshape(m, 1)
-	X 			= c_[ones((m, 1)), X] # Translates slice objects to concatenation along the second axis.
+	X 	 = c_[ones((m, 1)), X] # Translates slice objects to concatenation along the second axis.
 
 	theta0_vals = linspace(-10, 10, 100)
 	theta1_vals = linspace(-4, 4, 100)
@@ -149,8 +147,9 @@ def visualization():
 	# Fill out J_vals
 	for i, v0 in enumerate(theta0_vals):
 		for j, v1 in enumerate(theta1_vals):
-			theta 		 = array((theta0_vals[i], theta1_vals[j]))
+			theta 		 = array((theta0_vals[i], theta1_vals[j])).reshape(2, 1)
 			J_vals[i, j] = costFunctionVec(X, Y, theta)
+			# J_vals[i, j] = costFunction(X, Y, theta)
 
 	R, P = meshgrid(theta0_vals, theta1_vals)
 
