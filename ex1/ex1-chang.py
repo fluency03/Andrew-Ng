@@ -10,7 +10,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 # Path of the files
-PATH = '/home/cliu/workspace/Andrew Ng/ex1/'
+PATH = '/home/cliu/Documents/github/Andrew-Ng/ex1/'
 
 
 # generate the matrix - Part 1
