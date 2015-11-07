@@ -99,7 +99,7 @@ def part_3_2():
 		test = array([1.0, 1650.0, 3.0])
 		# exclude intercept units
 		test[1:] = (test[1:] - mean0) / std0
-		print test.dot( theta )
+		print "gradientDescentMulti is ", test.dot( theta )
 
 
 def part_3_3():
