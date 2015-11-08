@@ -66,17 +66,17 @@ def findMinTheta( theta, X, y, lamda ):
 	return result.x, result.fun
 
 def part2_1():
-	data  = genfromtxt( "/Users/saburookita/Downloads/mlclass-ex2-004/mlclass-ex2/ex2data2.txt", delimiter = ',' )
+	data  = genfromtxt( "/home/cliu/Documents/github/Andrew-Ng/ex2/ex2data2.txt", delimiter = ',' )
 	plot( data )
 	pyplot.show()
 
 def part2_2():
-	data  = genfromtxt( "/Users/saburookita/Downloads/mlclass-ex2-004/mlclass-ex2/ex2data2.txt", delimiter = ',' )
+	data  = genfromtxt( "/home/cliu/Documents/github/Andrew-Ng/ex2/ex2data2.txt", delimiter = ',' )
 	X 	  = mapFeature( data[:, 0], data[:, 1] )
 	print X
 
 def part2_3():
-	data  = genfromtxt( "/Users/saburookita/Downloads/mlclass-ex2-004/mlclass-ex2/ex2data2.txt", delimiter = ',' )
+	data  = genfromtxt( "/home/cliu/Documents/github/Andrew-Ng/ex2/ex2data2.txt", delimiter = ',' )
 	y 	  = data[:,2]
 	X 	  = mapFeature( data[:, 0], data[:, 1] )
 	theta = zeros( shape(X)[1] )
@@ -86,7 +86,7 @@ def part2_3():
 	theta, cost = findMinTheta( theta, X, y, lamda )
 
 def part2_4():
-	data  = genfromtxt( "/Users/saburookita/Downloads/mlclass-ex2-004/mlclass-ex2/ex2data2.txt", delimiter = ',' )
+	data  = genfromtxt( "/home/cliu/Documents/github/Andrew-Ng/ex2/ex2data2.txt", delimiter = ',' )
 	y 	  = data[:,2]
 	X 	  = mapFeature( data[:, 0], data[:, 1] )
 	theta = zeros( shape(X)[1] )
