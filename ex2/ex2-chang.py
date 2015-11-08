@@ -73,6 +73,15 @@ def plotBoundary( data, X, theta ):
 	pyplot.plot( plot_x, plot_y )
 
 
+def predict( theta, X, binary=True ):
+	prob = sigmoid( dot(X, theta) )
+	if binary :
+		return 1 if prob > 0.5 else 0
+	else:
+		return prob
+
+
+
 def part_1_1():
 	data = genfromtxt( PATH + "ex2data1.txt", delimiter=',')
 	plot( data )
@@ -99,7 +108,8 @@ def part_1_2():
 	plotBoundary( data, X, theta )
 	pyplot.show()
 
-
+	test = array([1, 45, 85])
+	print predict( test, theta )
 
 
 
