@@ -23,7 +23,7 @@ def sigmoid( z ):
 	# return 1.0 / (1.0 + exp( -z ))
 
 
-def displayData( X ):
+def displayData( X, theta=True ):
 	width = 20
 	rows, cols = 10, 10
 	out = zeros(( width * rows, width*cols ))
@@ -48,13 +48,47 @@ def displayData( X ):
 	pyplot.show()
 
 
+def sigmoid( z ):
+	return scipy.special.expit(z)
+	# return 1.0 / (1.0 + exp( -z ))
 
 
+def costFunction( theta, X, Y, lamda):
+	m 		   = shape(X)[0]
+	hypothesis = sigmoid( dot(X, theta) )
+	first 	   = dot( log(hypothesis).T, -Y )
+	second 	   = dot( log(1-hypothesis).T, -( 1-Y ))
+	reg_term   = dot( theta.T, theta) * (lamda / (2*m))
+
+	return (( first + second )/m + reg_term)
 
 
+def gradientCost( theta, X, Y, lamda ):
+	m = shape(X)[0]
+	grad = X.T.dot( sigmoid( X.dot( theta ) ) - Y ) / m
+	grad[1:] = grad[1:] + ( (theta[1:] * lamda ) / m )
+	return grad
 
 
+def oneVsALL( X, Y, num_classes, lamda ):
+	m, n      = shape(X)
+	all_theta = zeros( (num_classes, n+1) )
+	X 		  = c_[ones((m, 1)), X]
 
+	for c in range(0, num_classes):
+		initial_theta = zeros( (n + 1, 1) ).reshape(-1)
+		temp_y 		  = ((Y == (c+1)) + 0).reshape(-1)
+		theta 		  = scipy.optimize.fmin_cg( costFunction, fprime=gradientCost, x0=initial_theta, \
+												args=(X, temp_y, lamda), maxiter=50, disp=False, full_output=True )
+		all_theta[c,:] = theta[0]
+		print "%d Cost: %.5f" % (c+1, theta[1])
+
+	return all_theta
+
+
+def predictOneVsAll( theta, X, Y ):
+	m,n = shape( X )
+	X 	= c_[ones((m, 1)), X]
 
 
 
@@ -68,8 +102,18 @@ def part_1_1and2():
 
 
 
-def part_1_3():
-	pass
+def part_1_4():
+	mat 		= scipy.io.loadmat( PATH + "ex3data1.mat" )
+	X, Y 		= mat['X'], mat['y']
+	m, n 	    = shape(X) 
+	num_classes = 10
+	lamda 		= 0.1
+
+	theta = oneVsALL( X, Y, num_classes, lamda )
+	print theta
+
+	predictOneVsAll( theta, X, Y )
+	displayData( X, theta )
 
 
 
@@ -78,7 +122,7 @@ def part_1_3():
 # main function
 def main():
 	part_1_1and2()
-	# part_1_2()
+	part_1_4()
 
 
 # call the main function
