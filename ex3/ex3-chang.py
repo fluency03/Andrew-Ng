@@ -90,6 +90,14 @@ def predictOneVsAll( theta, X, Y ):
 	m,n = shape( X )
 	X 	= c_[ones((m, 1)), X]
 
+	correct = 0
+	for i in range(0, m ):
+		prediction 	= argmax( dot(X[i], theta.T) ) + 1
+		actual 		= Y[i]
+		# print "prediction = %d actual = %d" % (prediction, actual)
+		if actual == prediction:
+			correct += 1
+	print "Accuracy: %.2f%%" % (correct * 100.0 / m )
 
 
 
