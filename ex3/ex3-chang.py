@@ -91,13 +91,26 @@ def predictOneVsAll( theta, X, Y ):
 	X 	= c_[ones((m, 1)), X]
 
 	correct = 0
-	for i in range(0, m ):
-		prediction 	= argmax( dot(X[i], theta.T) ) + 1
+	for i in range(0, m):
+		prediction 	= argmax( sigmoid(dot(X[i], theta.T)) ) + 1
+		# argmax(): Returns the indices of the maximum values along an axis. 
 		actual 		= Y[i]
 		# print "prediction = %d actual = %d" % (prediction, actual)
 		if actual == prediction:
 			correct += 1
 	print "Accuracy: %.2f%%" % (correct * 100.0 / m )
+
+
+def predict( Theta1, Theta2, X ):
+	m,n = shape( X )
+	# X 	= c_[ones((m, 1)), X]
+
+	a1 = c_[ones((m, 1)), X]
+	a2 = c_[ones((m, 1)), sigmoid( dot(a1, Theta1.T) )]
+	a3 = sigmoid( dot(a2, Theta2.T) )
+	return ( a3 ) 
+
+
 
 
 
@@ -107,7 +120,6 @@ def part_1_1and2():
 	print shape(X), shape(Y)
 
 	displayData( X )
-
 
 
 def part_1_4():
@@ -124,6 +136,40 @@ def part_1_4():
 	displayData( X, theta )
 
 
+def part_2_1():
+	# Setup the parameters you will use for this exercise
+	input_layer_size  = 400  # 20x20 Input Images of Digits
+	hidden_layer_size = 25   # 25 hidden units
+	num_labels 		  = 10   # 10 labels, from 1 to 10   
+							 # (note that we have mapped "0" to label 10)
+
+	# load data
+	data = scipy.io.loadmat( PATH + "ex3data1.mat" )
+	X, Y = data['X'], data['y']
+	m, n = shape(X)
+
+	displayData(X)
+
+	# load weight
+	weight 		   = scipy.io.loadmat( PATH + "ex3weights.mat" )
+	Theta1, Theta2 = weight['Theta1'], weight['Theta2']
+	# print Theta1, Theta2
+
+	prediction = predict(Theta1, Theta2, X)
+	print shape(prediction)
+	correct = 0
+	for i in range(0, m):
+		pred   = argmax( prediction[i] ) + 1
+		# argmax(): Returns the indices of the maximum values along an axis. 
+		actual = Y[i]
+		# print "prediction = %d actual = %d" % (pred, actual)
+		if actual == pred:
+			correct += 1
+	print "Accuracy: %.2f%%" % (correct * 100.0 / m )
+
+
+
+
 
 
 
@@ -131,6 +177,7 @@ def part_1_4():
 def main():
 	part_1_1and2()
 	part_1_4()
+	part_2_1()
 
 
 # call the main function
