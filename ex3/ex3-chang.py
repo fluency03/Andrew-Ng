@@ -23,10 +23,10 @@ def sigmoid( z ):
 	# return 1.0 / (1.0 + exp( -z ))
 
 
-def displayData( X, theta=True ):
-	width = 20
+def displayData( X, theta=None ):
+	width 	   = 20 # width of one digital 
 	rows, cols = 10, 10
-	out = zeros(( width * rows, width*cols ))
+	out 	   = zeros(( width * rows, width*cols ))
 
 	rand_indices = random.permutation( 5000 )[0:rows * cols]
 	# generate an array of random numbers with max of 5000, and there 100 of them
@@ -39,7 +39,7 @@ def displayData( X, theta=True ):
 			out[start_x:start_x+width, start_y:start_y+width] = X[rand_indices[counter]].reshape(width, width).T
 			counter += 1
 
-	img 	= scipy.misc.toimage( out )
+	img = scipy.misc.toimage( out )
 	# figure  = pyplot.figure()
 	# axes    = figure.add_subplot(1, 1, 1)
 	# axes.imshow( img )
