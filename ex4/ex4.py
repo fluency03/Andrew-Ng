@@ -11,7 +11,7 @@ from matplotlib import pyplot, cm
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.mlab as mlaba
 
-from util import Util
+# from util import Util
 import timeit
 import cProfile, pstats, StringIO
 
@@ -219,27 +219,27 @@ def displayData( X, theta1 = None, theta2 = None ):
 	pyplot.show( )
 
 def part1_1():
-	mat = scipy.io.loadmat( "/Users/saburookita/Downloads/mlclass-ex4-004/mlclass-ex4/ex4data1.mat" )
+	mat = scipy.io.loadmat( "/home/cliu/Documents/github/Andrew-Ng/ex4/ex4data1.mat" )
 	X, y = mat['X'], mat['y']
 	displayData( X )
 
 def part1_2():
-	mat = scipy.io.loadmat( "/Users/saburookita/Downloads/mlclass-ex4-004/mlclass-ex4/ex4data1.mat" )
+	mat = scipy.io.loadmat( "/home/cliu/Documents/github/Andrew-Ng/ex4/ex4data1.mat" )
 	X, y = mat['X'], mat['y']
 	m, n = shape(X)
 
 	# Load the weights
-	mat = scipy.io.loadmat( "/Users/saburookita/Downloads/mlclass-ex4-004/mlclass-ex4/ex4weights.mat" )
+	mat = scipy.io.loadmat( "/home/cliu/Documents/github/Andrew-Ng/ex4/ex4weights.mat" )
 	theta1, theta2 = mat['Theta1'], mat['Theta2']
 
 	nn_params = [theta1.T.flatten(), theta2.T.flatten()]
 
 def part1_3():
-	mat = scipy.io.loadmat( "/Users/saburookita/Downloads/mlclass-ex4-004/mlclass-ex4/ex4data1.mat" )
+	mat = scipy.io.loadmat( "/home/cliu/Documents/github/Andrew-Ng/ex4/ex4data1.mat" )
 	X, y = mat['X'], mat['y']
 
 	# Load the weights
-	mat = scipy.io.loadmat( "/Users/saburookita/Downloads/mlclass-ex4-004/mlclass-ex4/ex4weights.mat" )
+	mat = scipy.io.loadmat( "/home/cliu/Documents/github/Andrew-Ng/ex4/ex4weights.mat" )
 	theta1, theta2 = mat['Theta1'], mat['Theta2']
 
 	input_layer_size  	= 400
@@ -253,11 +253,11 @@ def part1_3():
 	print computeCost( params, input_layer_size, hidden_layer_size, num_labels, X, y, lamda )
 
 def part1_4():
-	mat = scipy.io.loadmat( "/Users/saburookita/Downloads/mlclass-ex4-004/mlclass-ex4/ex4data1.mat" )
+	mat = scipy.io.loadmat( "/home/cliu/Documents/github/Andrew-Ng/ex4/ex4data1.mat" )
 	X, y = mat['X'], mat['y']
 
 	# Load the weights
-	mat = scipy.io.loadmat( "/Users/saburookita/Downloads/mlclass-ex4-004/mlclass-ex4/ex4weights.mat" )
+	mat = scipy.io.loadmat( "/home/cliu/Documents/github/Andrew-Ng/ex4/ex4weights.mat" )
 	theta1, theta2 = mat['Theta1'], mat['Theta2']
 
 	input_layer_size  	= 400
@@ -278,11 +278,11 @@ def part2_2():
 	unraveled = r_[theta1.T.flatten(), theta2.T.flatten()]
 	
 def part2_3():
-	mat = scipy.io.loadmat( "/Users/saburookita/Downloads/mlclass-ex4-004/mlclass-ex4/ex4data1.mat" )
+	mat = scipy.io.loadmat( "/home/cliu/Documents/github/Andrew-Ng/ex4/ex4data1.mat" )
 	X, y = mat['X'], mat['y']
 	m, n = shape(X)
 
-	mat = scipy.io.loadmat( "/Users/saburookita/Downloads/mlclass-ex4-004/mlclass-ex4/ex4weights.mat" )
+	mat = scipy.io.loadmat( "/home/cliu/Documents/github/Andrew-Ng/ex4/ex4weights.mat" )
 	theta1, theta2 = mat['Theta1'], mat['Theta2']
 
 	
@@ -299,11 +299,11 @@ def part2_3():
 
 
 def part2_4():
-	mat = scipy.io.loadmat( "/Users/saburookita/Downloads/mlclass-ex4-004/mlclass-ex4/ex4data1.mat" )
+	mat = scipy.io.loadmat( "/home/cliu/Documents/github/Andrew-Ng/ex4/ex4data1.mat" )
 	X, y = mat['X'], mat['y']
 	m, n = shape(X)
 
-	mat = scipy.io.loadmat( "/Users/saburookita/Downloads/mlclass-ex4-004/mlclass-ex4/ex4weights.mat" )
+	mat = scipy.io.loadmat( "/home/cliu/Documents/github/Andrew-Ng/ex4/ex4weights.mat" )
 	theta1, theta2 = mat['Theta1'], mat['Theta2']
 	
 	input_layer_size  	= 400
@@ -317,11 +317,11 @@ def part2_4():
 
 
 def part2_5():
-	mat = scipy.io.loadmat( "/Users/saburookita/Downloads/mlclass-ex4-004/mlclass-ex4/ex4data1.mat" )
+	mat = scipy.io.loadmat( "/home/cliu/Documents/github/Andrew-Ng/ex4/ex4data1.mat" )
 	X, y = mat['X'], mat['y']
 	m, n = shape(X)
 
-	mat = scipy.io.loadmat( "/Users/saburookita/Downloads/mlclass-ex4-004/mlclass-ex4/ex4weights.mat" )
+	mat = scipy.io.loadmat( "/home/cliu/Documents/github/Andrew-Ng/ex4/ex4weights.mat" )
 	theta1, theta2 = mat['Theta1'], mat['Theta2']
 
 	input_layer_size  	= 400
@@ -334,7 +334,7 @@ def part2_5():
 	print J
 
 def part2_6():
-	mat = scipy.io.loadmat( "/Users/saburookita/Downloads/mlclass-ex4-004/mlclass-ex4/ex4data1.mat" )
+	mat = scipy.io.loadmat( "/home/cliu/Documents/github/Andrew-Ng/ex4/ex4data1.mat" )
 	X, y = mat['X'], mat['y']
 	m, n = shape(X)
 
