@@ -121,6 +121,7 @@ def nnCostFunction( nn_params, input_layer_size, hidden_layer_size, num_labels, 
 
 	# back propagate
 	sigma3 = a3 - yk
+	# print shape(theta2), shape(sigma3)
 	sigma2 = theta2.T.dot( sigma3 ) * sigmoidGradient( r_[ ones((1, m)), z2 ] )
 	sigma2 = sigma2[1:,:]
 
@@ -131,6 +132,7 @@ def nnCostFunction( nn_params, input_layer_size, hidden_layer_size, num_labels, 
 	accum2[:,1:] = accum2[:,1:] + (theta2[:,1:] * lamda / m)
 
 	gradient 	 = array([accum1.T.reshape(-1).tolist() + accum2.T.reshape(-1).tolist()]).T
+	# print "grad shape is ", shape(gradient)
 
 	return (cost, gradient)
 
@@ -155,6 +157,7 @@ def computeNumericalGradient( theta, input_layer_size, hidden_layer_size, num_la
 	yk = recodeLabel( y, num_labels )
 
 	for p in range(0, num_elements) :
+		# print p
 		perturb[p] = e
 		loss1 = computeCost( theta - perturb, input_layer_size, hidden_layer_size, num_labels, X, y, lamda, yk )
 		loss2 = computeCost( theta + perturb, input_layer_size, hidden_layer_size, num_labels, X, y, lamda, yk )
