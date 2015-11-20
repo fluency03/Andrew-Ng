@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-#!/usr/bin/python
-
 # import PIL.Image
 import scipy.optimize, scipy.special, scipy.io
 # import scipy.misc, 
@@ -24,12 +22,14 @@ def sigmoid(z):
 	# return 1.0 / (1.0 + exp( -z ))
 
 
-def displayData( X, theta1 = None, theta2 = None ):
+def displayData( X, theta1 = None, theta2 = None, hidden = None ):
 	width = 20 # width of one digital 
 	rows, cols = 5, 5 # row and column number of the display image in terms of digitals
 	out = zeros( (width*rows, width*cols) ) # the initialization of digitals being displayed
 
 	rand_index = random.permutation( 5000 )[0: rows*cols]
+	if hidden is not None:
+		rand_index = random.permutation( 25 )[0: rows*cols]
 	# generate an array of random numbers with max of 5000, and there 100 of them
 
 	counter = 0
@@ -362,11 +362,11 @@ def part_2_6():
 		actual = y[i]
 		if( prediction == actual ):
 			counter+=1
-	print "Prediction: %.6f" %((counter * 100 / m)/100)
+	print "Accuracy: %.2f%%" % (counter * 100.0 / m )
 
-	displayData( theta1[:,1:] )
+	displayData( theta1[:,1:], hidden=1 )
 
-	
+
 
 def part_3():
 	pass
