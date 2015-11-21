@@ -51,6 +51,7 @@ def computeGradient( theta, X, y, lamda ):
 
 
 def linearRegCostFunction( theta, X, y, lamda ):
+	# print theta
 	theta = theta.reshape( shape(X)[1], 1 )
 	# print theta
 	m 	  = shape(y)[0]
@@ -72,16 +73,50 @@ def linearRegCostFunction( theta, X, y, lamda ):
 	return J, grad.flatten()
 
 
-def trainLinearReg( X, y, lamda, use_scipy=False ):
+def trainLinearReg( X, y, lamda, use_scipy=True ):
 	theta = zeros( (shape(X)[1], 1) )
 
 	result = scipy.optimize.fmin_cg( computeCost, fprime = computeGradient, x0 = theta, 
 									 args = (X, y, lamda), maxiter = 200, disp = True, full_output = True )
-	print result[1], result[0]
+	# print result[1], result[0]
 	return result[1], result[0]
 
 
+def learningCurve(X, y, Xval, yval, lamda):
+	m, n = shape(X)
 
+	error_train = zeros((m, 1))
+	error_val   = zeros((m, 1))
+
+	X 	  = c_[ ones((m, 1)), X ]
+	mval  = shape(Xval)[0]
+	Xval  = c_[ ones((mval, 1)), Xval ]
+
+	for i in range(0, m):
+		XSubset 	   = X[0:i+1, :]
+		ySubset 	   = y[0:i+1, :]
+		# print shape(XSubset)
+		cost, theta    = trainLinearReg(XSubset, ySubset, lamda)
+		# print(theta)
+		error_train[i], grad_train = linearRegCostFunction(theta, XSubset, ySubset, 0)
+		error_val[i], grad_val     = linearRegCostFunction(theta, Xval, yval, 0)
+
+
+	points = array([x for x in range(1, m+1)])
+
+	pyplot.plot( points, error_train, color='b', linewidth=2, label='Train' )
+	pyplot.plot( points, error_val, color='g', linewidth=2, label='Cross Validation' )
+
+	pyplot.ylabel('Error')
+	pyplot.xlabel('Number of training examples')
+	pyplot.ylim([-2, 150])
+	pyplot.xlim([0, 13])
+
+	pyplot.legend()
+	pyplot.show( block=True )
+
+	# print shape(error_train), shape(error_val)
+	return error_train, error_val
 
 
 
@@ -122,19 +157,20 @@ def part_1():
 
 
 def part_2():
-	# Xval, yval 	= mat['Xval'], mat['yval']
-	# Xtest, ytest 	= mat['Xtest'], mat['ytest']
 	data = scipy.io.loadmat( PATH + "ex5data1.mat" )
 	X, y = data['X'], data['y']
 	m, n = shape(X)
 
+	Xval, yval 	 = data['Xval'], data['yval']
+	Xtest, ytest = data['Xtest'], data['ytest']
+
+	lamda = 0.0
+
+	error_train, error_val = learningCurve(X, y, Xval, yval, lamda)
 
 
-
-
-
-
-
+def part_3():
+	pass
 
 
 
@@ -154,7 +190,7 @@ def part_2():
 def main():
 	part_1()
 	part_2()
-
+	part_3()
 
 
 
