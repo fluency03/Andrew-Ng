@@ -21,6 +21,8 @@ def plotData( X, y ):
 	# pyplot.show()
 
 
+# ---------------------------------------------------------------------------------
+
 def computeCost( theta, X, y, lamda ):
 	theta = theta.reshape( shape(X)[1], 1 )
 	m 	  = shape(y)[0]
@@ -76,6 +78,36 @@ def linearRegCostFunction( theta, X, y, lamda ):
 	print grad.flatten()
 
 	return J[0], grad.flatten()
+
+
+# ---------------------------------------------------------------------------------
+
+
+# def computeCost( theta, X, y, lamda ):
+# 	theta 		= theta.reshape( shape(X)[1], 1 )
+# 	m 			= shape( X )[0]
+# 	term1 		= X.dot( theta ) - y 
+# 	left_term 	= term1.T.dot( term1 ) / (2 * m)
+# 	right_term  = theta[1:].T.dot( theta[1:] ) * (lamda / (2*m))
+# 	J = (left_term + right_term).flatten()[0]
+# 	return J
+
+# def computeGradient( theta, X, y, lamda ):
+# 	theta 		= theta.reshape( shape(X)[1], 1 )
+# 	m 			= shape( X )[0]
+# 	grad 		= X.dot( theta ) - y 
+# 	grad 		= X.T.dot( grad) / m
+# 	grad[1:]	= grad[1:] + theta[1:] * lamda / m
+
+# 	return grad.flatten()
+
+# def linearRegCostFunction( theta, X, y, lamda ):
+# 	cost = computeCost( theta, X, y, lamda )
+# 	grad = computeGradient( theta, X, y, lamda )
+# 	return grad
+
+
+# ---------------------------------------------------------------------------------
 
 
 def trainLinearReg( X, y, lamda, use_scipy=True ):
@@ -147,6 +179,13 @@ def polyFeatures(X, p):
 	return X_poly
 
 
+# def polyFeatures( X, p ):
+# 	out = copy(X)
+# 	for i in range(1, p):
+# 		out = c_[out, X**(i+1)]
+# 	return out
+
+
 def featureNormalize(X):
 	# print X
 	mu 	   = mean(X, axis=0 )
@@ -185,6 +224,7 @@ def plotFit(min_x, max_x, mu, sigma, theta, p):
 
 
 
+# ---------------------------------------------------------------------------------
 
 def part_1():
 	data = scipy.io.loadmat( PATH + "ex5data1.mat" )
@@ -235,28 +275,31 @@ def part_3():
 
 	Xval, yval 	 = data['Xval'], data['yval']
 	Xtest, ytest = data['Xtest'], data['ytest']
+	# print shape(X), shape(Xval), shape(Xtest)
 
 	p = 8
 
 	X_poly 			  = polyFeatures(X, p)
-	X_norm, mu, sigma = featureNormalize(X_poly)
+	X_poly, mu, sigma = featureNormalize(X_poly)
 	X_poly 			  = c_[ones((m, 1)), X_poly]
 
 	X_poly_test = polyFeatures( Xtest, p )
-	X_poly_test = X_poly_test - mu
-	X_poly_test = X_poly_test / sigma
+	X_poly_test = (X_poly_test - mu) / sigma
+	# X_poly_test = X_poly_test / sigma
 	X_poly_test = c_[ones(( shape(X_poly_test)[0], 1)), X_poly_test]
 	
 	X_poly_val = polyFeatures( Xval, p )
-	X_poly_val = X_poly_val - mu
-	X_poly_val = X_poly_val / sigma
+	X_poly_val = (X_poly_val - mu) / sigma 
+	# X_poly_val = X_poly_val / sigma
 	X_poly_val = c_[ones(( shape(X_poly_val)[0], 1)), X_poly_val]
 
-	print X_poly[0, :]
+	# print X_poly[0, :]
+	# print X_poly, X_poly_test, X_poly_val
 
+	# ----------------------------------------------------------------
 	# part_3_1
 	lamda 		= 0.0
-	# print shape(X_poly)
+	print X_poly
 	cost, theta = trainLinearReg(X_poly, y, lamda)
 	# print theta
 	# print cost
@@ -269,18 +312,26 @@ def part_3():
 
 	pyplot.text( -15, 165, 'Lambda = %.1f' %lamda )
 	# print mu, sigma
-	print theta
+	# print theta
 	plotFit( min(X), max(X), mu, sigma, theta, p )
-
 
 	pyplot.show()
 
 
+	learningCurve(X_poly, y, X_poly_val, yval, lamda)
+
+	# ----------------------------------------------------------------
+	# part_3_2
 
 
 
 
 
+
+
+
+
+# ---------------------------------------------------------------------------------
 
 # main function
 def main():
