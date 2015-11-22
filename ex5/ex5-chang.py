@@ -29,10 +29,11 @@ def computeCost( theta, X, y, lamda ):
 
 	h = X.dot(theta)
 	squaredErrors = (h - y).T.dot(h - y)
-	thetaExcludingZero = array( c_[zeros((1, 1)), theta[1:] ].flatten() )
-	J = (1.0 / (2 * m)) * sum(squaredErrors) + (lamda / (2 * m)) * sum(thetaExcludingZero.T.dot(thetaExcludingZero))
+	# theta[0] = 0.0
+	# print theta.T
+	J = (1.0 / (2 * m)) * (squaredErrors) + (lamda / (2 * m)) * (theta.T.dot(theta))
 
-	return J
+	return J[0]
 
 
 def computeGradient( theta, X, y, lamda ):
@@ -43,9 +44,10 @@ def computeGradient( theta, X, y, lamda ):
 
 	h = X.dot(theta)
 	squaredErrors = (h - y).T.dot(h - y)
-	thetaExcludingZero = array( c_[zeros((1, 1)), theta[1:] ].flatten() )
-	J = (1.0 / (2 * m)) * sum(squaredErrors) + (lamda / (2 * m)) * sum(thetaExcludingZero.T.dot(thetaExcludingZero))
-	grad[:] = (1.0 / m) * (X.T.dot(h - y))[:] + (lamda / m) * thetaExcludingZero[1:]
+	# theta[0] = 0.0
+	J = (1.0 / (2 * m)) * (squaredErrors) + (lamda / (2 * m)) * (theta.T.dot(theta))
+	# theta[0] = 0.0
+	grad = (1.0 / m) * (X.T.dot(h - y)) + (lamda / m) * theta
 
 	return grad.flatten()
 
@@ -63,21 +65,29 @@ def linearRegCostFunction( theta, X, y, lamda ):
 	# print h
 	squaredErrors = (h - y).T.dot(h - y)
 	# print squaredErrors
-	thetaExcludingZero = array( c_[zeros((1, 1)), theta[1:] ].flatten() )
-	# print shape(thetaExcludingZero)
-	J = (1.0 / (2 * m)) * sum(squaredErrors) + (lamda / (2 * m)) * sum(thetaExcludingZero.T.dot(thetaExcludingZero))
-	print J
-	grad[:] = (1.0 / m) * (X.T.dot(h - y))[:] + (lamda / m) * thetaExcludingZero[1:]
+	# print theta
+	# theta[0] = 0.0
+	# print theta
+	J = (1.0 / (2 * m)) * (squaredErrors) + (lamda / (2 * m)) * (theta.T.dot(theta))
+	print J[0]
+	# print shape(X), shape(h-y), shape(grad), shape(theta)
+	# theta[0] = 0.0
+	grad = (1.0 / m) * (X.T.dot(h - y)) + (lamda / m) * theta
 	print grad.flatten()
 
-	return J, grad.flatten()
+	return J[0], grad.flatten()
 
 
 def trainLinearReg( X, y, lamda, use_scipy=True ):
-	theta = zeros( (shape(X)[1], 1) )
+	# epsilon = 0.9
+	theta = random.rand( shape(X)[1], 1 ) #* (2*epsilon)-epsilon # random initialization of theta
+	# print theta
 
-	result = scipy.optimize.fmin_cg( computeCost, fprime = computeGradient, x0 = theta, 
-									 args = (X, y, lamda), maxiter = 200, disp = True, full_output = True )
+	if use_scipy is True:
+		result = scipy.optimize.fmin_cg( computeCost, fprime = computeGradient, x0 = theta, 
+										 args = (X, y, lamda), maxiter = 200, disp = True, full_output = True )
+	else:
+		result = Util.fmincg( f=computeCost, fprime=computeGradient, x0=theta, args=(X, y, lamda), maxiter=200 )
 	# print result[1], result[0]
 	return result[1], result[0]
 
@@ -98,11 +108,15 @@ def learningCurve(X, y, Xval, yval, lamda):
 		# print shape(XSubset)
 		cost, theta    = trainLinearReg(XSubset, ySubset, lamda)
 		# print(theta)
-		error_train[i], grad_train = linearRegCostFunction(theta, XSubset, ySubset, 0)
-		error_val[i], grad_val     = linearRegCostFunction(theta, Xval, yval, 0)
+		error_train[i] = computeCost(theta, XSubset, ySubset, lamda)
+		error_val[i]   = computeCost(theta, Xval, yval, lamda)
 
+	# print error_train, error_val
 
 	points = array([x for x in range(1, m+1)])
+
+	# error_train = error_train.flatten()
+	# error_val	= error_val.flatten()
 
 	pyplot.plot( points, error_train, color='b', linewidth=2, label='Train' )
 	pyplot.plot( points, error_val, color='g', linewidth=2, label='Cross Validation' )
@@ -119,6 +133,53 @@ def learningCurve(X, y, Xval, yval, lamda):
 	return error_train, error_val
 
 
+def polyFeatures(X, p):
+	m, n   = shape(X)
+	powers = matlib.repmat(range(1, p+1), m, 1)
+	Xrep   = matlib.repmat(X, 1, p)
+	# print shape(powers), shape(Xrep)
+	X_poly = Xrep ** powers
+	# print shape(X_poly)
+	# print X_poly
+	# test   = (ones((12,8))*2) ** powers
+	# print test
+
+	return X_poly
+
+
+def featureNormalize(X):
+	# print X
+	mu 	   = mean(X, axis=0 )
+	# print shape(mu)
+	# print mu
+	X_norm = X - mu
+	# print shape(X_norm)
+	# print X_norm
+
+
+	sigma  = std(X_norm, axis=0, ddof=1)
+	# print shape(sigma)
+	X_norm = X_norm / sigma
+
+
+	return X_norm, mu, sigma
+
+
+def plotFit(min_x, max_x, mu, sigma, theta, p):
+	x = arange( min_x - 15, max_x + 25, 0.05).reshape(ceil((40+max_x-min_x)/0.05),1)
+	# print shape(x)
+	# print (40+max_x-min_x)/0.05
+
+	X_poly = polyFeatures(x, p)
+	X_poly = (X_poly - mu) / sigma
+	# X_poly = X_poly / sigma
+	# print X_poly
+
+	X_poly = c_[ones( (shape(x)[0], 1) ), X_poly]
+	# print shape(theta)
+	# print shape(X_poly)
+
+	pyplot.plot(x, X_poly.dot(theta), linestyle='--', linewidth=3)
 
 
 
@@ -154,8 +215,6 @@ def part_1():
 	pyplot.show()
 
 
-
-
 def part_2():
 	data = scipy.io.loadmat( PATH + "ex5data1.mat" )
 	X, y = data['X'], data['y']
@@ -170,14 +229,51 @@ def part_2():
 
 
 def part_3():
-	pass
+	data = scipy.io.loadmat( PATH + "ex5data1.mat" )
+	X, y = data['X'], data['y']
+	m, n = shape(X)
+
+	Xval, yval 	 = data['Xval'], data['yval']
+	Xtest, ytest = data['Xtest'], data['ytest']
+
+	p = 8
+
+	X_poly 			  = polyFeatures(X, p)
+	X_norm, mu, sigma = featureNormalize(X_poly)
+	X_poly 			  = c_[ones((m, 1)), X_poly]
+
+	X_poly_test = polyFeatures( Xtest, p )
+	X_poly_test = X_poly_test - mu
+	X_poly_test = X_poly_test / sigma
+	X_poly_test = c_[ones(( shape(X_poly_test)[0], 1)), X_poly_test]
+	
+	X_poly_val = polyFeatures( Xval, p )
+	X_poly_val = X_poly_val - mu
+	X_poly_val = X_poly_val / sigma
+	X_poly_val = c_[ones(( shape(X_poly_val)[0], 1)), X_poly_val]
+
+	print X_poly[0, :]
+
+	# part_3_1
+	lamda 		= 0.0
+	# print shape(X_poly)
+	cost, theta = trainLinearReg(X_poly, y, lamda)
+	# print theta
+	# print cost
+
+	pyplot.scatter( X, y, marker='x', c='r', s=30, linewidth=2 )
+	pyplot.xlim([-80, 80])
+	pyplot.ylim([-60, 40])
+	pyplot.xlabel('Change in water level(x)')
+	pyplot.ylabel('Water flowing out of the dam(y)')
+
+	pyplot.text( -15, 165, 'Lambda = %.1f' %lamda )
+	# print mu, sigma
+	print theta
+	plotFit( min(X), max(X), mu, sigma, theta, p )
 
 
-
-
-
-
-
+	pyplot.show()
 
 
 
